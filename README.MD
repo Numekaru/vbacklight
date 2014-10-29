@@ -1,3 +1,8 @@
-vbacklight is fork of xbacklight for adjusting backlight using ncurses
+#VBACKLIGHT
+**vbacklight** is a fork of **xbacklight**
 
-with vim-like bindings
+It provides ncurses interface to adjust brightness.
+
+You can use **h, l and left/right arrow keys** to regulate your backlight
+
+Press **q** to quit
