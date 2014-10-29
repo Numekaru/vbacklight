@@ -1,2 +1,3 @@
-vbacklight is for of xbacklight for tuning backlight with tui using ncurses
+vbacklight is fork of xbacklight for adjusting backlight using ncurses
+
 with vim-like bindings
