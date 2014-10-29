@@ -1,0 +1,6 @@
+build/*
+vbacklight.kdev4
+.kdev4/*
+.deps
+.deps/*
+vbacklight
