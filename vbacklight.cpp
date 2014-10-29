@@ -50,7 +50,8 @@ init_tui ( int &x, int &y, int &step, int stepcount, int cur, int max, int min )
         noecho();
         curs_set ( 0 );
         step= ( max-min ) / stepcount;
-
+	
+	sleep(0.5);
         x=getmaxx ( stdscr );
         y=getmaxy ( stdscr );
         move ( y/2, 0 );
