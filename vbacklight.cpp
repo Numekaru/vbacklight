@@ -37,7 +37,7 @@
 #include <sys/ioctl.h>
 
 #include <ncurses.h>
-
+#include <signal.h>
 static char *program_name;
 
 static xcb_atom_t backlight, backlight_new, backlight_legacy;
@@ -50,8 +50,8 @@ init_tui ( int &x, int &y, int &step, int stepcount, int cur, int max, int min )
         noecho();
         curs_set ( 0 );
         step= ( max-min ) / stepcount;
-	
-	sleep(0.5);
+
+        sleep ( 0.5 );
         x=getmaxx ( stdscr );
         y=getmaxy ( stdscr );
         move ( y/2, 0 );
@@ -64,13 +64,14 @@ init_tui ( int &x, int &y, int &step, int stepcount, int cur, int max, int min )
         move ( y/2,x*cur/max -1 );
         refresh();
 }
-static inline void
+inline void
 move_bright ( int cur, int step, int max,int min )
 {
         int x=getmaxx ( curscr );
         int y=getmaxy ( curscr );
         int moveto;
 
+        wclear ( stdscr );
         move ( y/2,0 );
         printw ( "[" );
         if ( cur==min ) {
@@ -89,7 +90,6 @@ move_bright ( int cur, int step, int max,int min )
         refresh();
 
 }
-
 static long
 backlight_get ( xcb_connection_t *conn, xcb_randr_output_t output )
 {
@@ -138,7 +138,6 @@ backlight_set ( xcb_connection_t *conn, xcb_randr_output_t output, long value )
                                            32, XCB_PROP_MODE_REPLACE,
                                            1, ( unsigned char * ) &value );
 }
-
 int
 main ( int argc, char **argv )
 {
@@ -250,7 +249,6 @@ main ( int argc, char **argv )
                                 int step;
                                 int ch;
                                 int stepcount=50;
-				
                                 init_tui ( x,y,step,stepcount, cur,max,min );
                                 keypad ( stdscr,TRUE );
                                 refresh();
@@ -286,7 +284,7 @@ main ( int argc, char **argv )
                                                 endwin();
                                                 return 1;
                                         default:
-						
+
                                                 break;
                                         }
                                         move_bright ( cur,step, max,min );
