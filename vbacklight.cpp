@@ -251,7 +251,6 @@ main ( int argc, char **argv )
                 step= ( max-min ) /15;
                 ch=1;
 
-
                 do
                     {
                     switch ( ch )
