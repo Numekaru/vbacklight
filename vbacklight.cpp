@@ -42,6 +42,37 @@ static char *program_name;
 
 static xcb_atom_t backlight, backlight_new, backlight_legacy;
 
+int x, xf, y,gcur, step, ch;
+void draw()
+    {
+    move ( y/2,0 );
+    printw ( "[" );
+    for ( int i=1; i<gcur; i++ )
+        printw ( "#" );
+    for ( int i=gcur; i<xf; i++ )
+        printw ( "-" );
+    move ( y/2, x-1 );
+    printw ( "]" );
+    refresh();
+    }
+void reset_parametres ( int dummy )
+    {
+    endwin();
+    initscr();
+    cbreak();
+    noecho();
+    nonl();
+    curs_set ( 0 );
+    intrflush ( stdscr,FALSE );
+    keypad ( stdscr, TRUE );
+    x=getmaxx ( stdscr );
+    xf=x-1;
+    y=getmaxy ( stdscr );
+    wclear ( stdscr );
+    move ( y/2-1,x/2-strlen ( "VBacklight by Alexander Romashev" ) /2 );
+    printw ( "VBacklight by Alexander Romashev" );
+    draw();
+    }
 static long
 backlight_get ( xcb_connection_t *conn, xcb_randr_output_t output )
     {
@@ -214,23 +245,12 @@ main ( int argc, char **argv )
                     max = values[1];
                     }
 
-                initscr();
-                cbreak();
-                noecho();
-                nonl();
-                curs_set ( 0 );
-                intrflush ( stdscr,FALSE );
-                keypad ( stdscr, TRUE );
 
-                int x=getmaxx ( stdscr ),
-                    xf=x-1,
-                    y=getmaxy ( stdscr ),
-                    gcur=x*cur/ ( max-min ),
-                    step= ( max-min ) /15,
-                    ch=1;
+                reset_parametres ( 1 );
+                signal ( SIGWINCH,reset_parametres );
+                step= ( max-min ) /15;
+                ch=1;
 
-                move ( y/2-1,x/2-strlen ( "VBacklight by Alexander Romashev" ) /2 );
-                printw ( "VBacklight by Alexander Romashev" );
 
                 do
                     {
@@ -260,17 +280,7 @@ main ( int argc, char **argv )
                     gcur=x*cur/ ( max-min );
                     if ( cur==max ) gcur=x-1;
                     if ( cur==min ) gcur=1;
-
-                    move ( y/2,0 );
-                    printw ( "[" );
-                    for ( int i=1; i<gcur; i++ )
-                        printw ( "#" );
-                    for ( int i=gcur; i<xf; i++ )
-                        printw ( "-" );
-                    move ( y/2, x-1 );
-                    printw ( "]" );
-                    refresh();
-
+                    draw();
                     backlight_set ( conn,output,cur );
                     xcb_flush ( conn );
                     }
